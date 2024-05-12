@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\nixie_tube" 
+PRINT(".\Listings\nixie_tube.m51") RAMSIZE(256) 

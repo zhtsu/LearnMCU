@@ -12,8 +12,13 @@
   </project>
 
   <project>
-    <PathAndName>.\Button\button.uvproj</PathAndName>
+    <PathAndName>.\button\button.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\digital_display\digital_display.uvproj</PathAndName>
     <NodeIsActive>1</NodeIsActive>
+    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
 </ProjectWorkspace>
