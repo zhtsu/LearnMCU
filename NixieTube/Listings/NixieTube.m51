@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        05/13/2024  19:20:51  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/13/2024  19:40:47  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -11,6 +11,7 @@ MEMORY MODEL: SMALL
 INPUT MODULES INCLUDED:
   .\Objects\main.obj (MAIN)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
 
 
 LINK MAP OF MODULE:  .\Objects\NixieTube (MAIN)
@@ -21,12 +22,15 @@ LINK MAP OF MODULE:  .\Objects\NixieTube (MAIN)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            IDATA   0008H     0001H     UNIT         ?STACK
+            DATA    0008H     0039H     UNIT         ?DT?MAIN
+            IDATA   0041H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
-            CODE    0003H     000CH     UNIT         ?C_C51STARTUP
-            CODE    000FH     000BH     UNIT         ?PR?MAIN?MAIN
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     003FH     UNIT         ?C_INITSEG
+            CODE    00CEH     003DH     UNIT         ?PR?_DISPLAYDIGIT?MAIN
+            CODE    010BH     000BH     UNIT         ?PR?MAIN?MAIN
 
 
 
@@ -38,6 +42,10 @@ SEGMENT
 ---------------------
 ?C_C51STARTUP
   +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN
+  +--> ?PR?_DISPLAYDIGIT?MAIN
 
 
 
@@ -49,25 +57,36 @@ SYMBOL TABLE OF MODULE:  .\Objects\NixieTube (MAIN)
   -------         MODULE        MAIN
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0080H         PUBLIC        P0
-  B:00A0H.1       PUBLIC        P2_1
   B:00A0H.2       PUBLIC        P2_2
   B:00A0H.3       PUBLIC        P2_3
-  C:000FH         PUBLIC        main
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/13/2024  19:40:47  PAGE 2
+
+
+  B:00A0H.4       PUBLIC        P2_4
+  C:010BH         PUBLIC        main
+  C:00CEH         PUBLIC        _DisplayDigit
+  D:0008H         PUBLIC        DigitTable
+  D:0011H         PUBLIC        TubeTable
+  -------         PROC          _DISPLAYDIGIT
+  D:0007H         SYMBOL        Location
+  D:0002H         SYMBOL        Number
+  C:00CEH         LINE#         20
+  C:00D0H         LINE#         21
+  C:00D0H         LINE#         22
+  C:00E1H         LINE#         23
+  C:00F2H         LINE#         24
+  C:0103H         LINE#         26
+  C:010AH         LINE#         27
+  -------         ENDPROC       _DISPLAYDIGIT
   -------         PROC          MAIN
-  C:000FH         LINE#         3
-  C:000FH         LINE#         4
-  C:000FH         LINE#         5
-  C:0011H         LINE#         6
-  C:0013H         LINE#         7
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/13/2024  19:20:51  PAGE 2
-
-
-  C:0015H         LINE#         8
-  C:0018H         LINE#         10
-  C:0018H         LINE#         11
-  C:0018H         LINE#         13
+  C:010BH         LINE#         29
+  C:010BH         LINE#         30
+  C:010BH         LINE#         31
+  C:0114H         LINE#         33
+  C:0114H         LINE#         34
+  C:0114H         LINE#         36
   -------         ENDPROC       MAIN
   -------         ENDMOD        MAIN
 
-Program Size: data=9.0 xdata=0 code=26
+Program Size: data=66.0 xdata=0 code=278
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
