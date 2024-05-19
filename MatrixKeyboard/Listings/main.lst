@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   MAIN                                                                  05/19/2024 06:10:47 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  05/19/2024 19:17:28 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
@@ -52,40 +52,68 @@ line level    source
   42   1              return KeyNum;
   43   1      }
   44          
-  45          void main()
-  46          {
-  47   1              unsigned char KeyNum;
-  48   1              unsigned int Password = 0;
-  49   1              unsigned char Count = 0;
-  50   1              
-  51   1              LCD_Init();
-  52   1              LCD_ShowString(1, 1, "Password:");
-  53   1              while(1)
-  54   1              {
-C51 COMPILER V9.54   MAIN                                                                  05/19/2024 06:10:47 PAGE 2   
+  45          unsigned char KeyNum = 0;
+  46          unsigned int Password = 0;
+  47          unsigned char Count = 0;
+  48          
+  49          void ResetPassword()
+  50          {
+  51   1              Password = 0;
+  52   1              Count = 0;
+  53   1              LCD_ShowNum(2, 1, Password, 4);
+  54   1      }
+C51 COMPILER V9.54   MAIN                                                                  05/19/2024 19:17:28 PAGE 2   
 
-  55   2                      KeyNum = MatrixKey();
-  56   2                      
-  57   2                      if (KeyNum == 0 || KeyNum > 10 || Count == 4)
-  58   2                      {
-  59   3                              continue;
-  60   3                      }
-  61   2                      
-  62   2                      Password *= 10;
-  63   2                      Password += KeyNum % 10;
-  64   2                      Count++;
+  55          
+  56          void main()
+  57          {
+  58   1              LCD_Init();
+  59   1              LCD_ShowString(1, 1, "Password:");
+  60   1              while(1)
+  61   1              {
+  62   2                      KeyNum = MatrixKey();
+  63   2                      
+  64   2                      if (KeyNum == 0) continue;
   65   2                      
-  66   2                      LCD_ShowNum(2, 1, Password, 4);
-  67   2              }
-  68   1      }
+  66   2                      if (KeyNum == 11)
+  67   2                      {
+  68   3                              if (Password == 1234)
+  69   3                              {
+  70   4                                      LCD_ShowString(1, 14, "OK ");
+  71   4                                      ResetPassword();
+  72   4                              }
+  73   3                              else
+  74   3                              {
+  75   4                                      LCD_ShowString(1, 14, "ERR");
+  76   4                                      ResetPassword();
+  77   4                              }
+  78   3                      }
+  79   2                      else if (KeyNum == 12)
+  80   2                      {
+  81   3                              ResetPassword();
+  82   3                              LCD_ShowString(1, 14, "   ");
+  83   3                      }
+  84   2                      
+  85   2                      if (KeyNum == 0 || KeyNum > 10 || Count == 4)
+  86   2                      {
+  87   3                              continue;
+  88   3                      }
+  89   2                      
+  90   2                      Password *= 10;
+  91   2                      Password += KeyNum % 10;
+  92   2                      Count++;
+  93   2                      
+  94   2                      LCD_ShowNum(2, 1, Password, 4);
+  95   2              }
+  96   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    485    ----
-   CONSTANT SIZE    =     10    ----
+   CODE SIZE        =    567    ----
+   CONSTANT SIZE    =     22    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       5
+   DATA SIZE        =      4       1
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
