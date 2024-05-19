@@ -9,16 +9,22 @@
 
   <project>
     <PathAndName>.\LED\LED.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\Button\Button.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\NixieTube\NixieTube.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\MatrixKeyboard\MatrixKeyboard.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Timer\Timer.uvproj</PathAndName>
     <NodeIsActive>1</NodeIsActive>
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
