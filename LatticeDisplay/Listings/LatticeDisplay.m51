@@ -1,0 +1,167 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/22/2024  00:27:10  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj TO .\Objects\LatticeDisplay PRINT (.\Listings\LatticeDisplay.m51) RAMSIZE
+>>  (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\LatticeDisplay (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0002H     UNIT         _DATA_GROUP_
+            IDATA   000AH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0050H     UNIT         ?CO?MAIN
+            CODE    0053H     0037H     UNIT         ?PR?MAIN?MAIN
+            CODE    008AH     002DH     UNIT         ?PR?_WRITEBYTETO74HC595?MAIN
+            CODE    00B7H     0022H     UNIT         ?PR?_SHOWLATTICEDISPLAYCOLUMN?MAIN
+            CODE    00D9H     001AH     UNIT         ?PR?_DELAYMS?MAIN
+            CODE    00F3H     000CH     UNIT         ?C_C51STARTUP
+            CODE    00FFH     0005H     UNIT         ?PR?INITLATTICEDISPLAY?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\LatticeDisplay (MAIN)
+
+
+SEGMENT                                      DATA_GROUP 
+  +--> CALLED SEGMENT                      START    LENGTH
+----------------------------------------------------------
+?C_C51STARTUP                              -----    -----
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                              0008H    0002H
+  +--> ?PR?INITLATTICEDISPLAY?MAIN
+  +--> ?CO?MAIN
+  +--> ?PR?_SHOWLATTICEDISPLAYCOLUMN?MAIN
+
+?PR?_SHOWLATTICEDISPLAYCOLUMN?MAIN         -----    -----
+  +--> ?PR?_WRITEBYTETO74HC595?MAIN
+  +--> ?PR?_DELAYMS?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\LatticeDisplay (MAIN)
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/22/2024  00:27:10  PAGE 2
+
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:00B0H         PUBLIC        P3
+  C:0003H         PUBLIC        Title
+  C:008AH         PUBLIC        _WriteByteTo74HC595
+  C:0053H         PUBLIC        main
+  C:00D9H         PUBLIC        _DelayMs
+  C:00FFH         PUBLIC        InitLatticeDisplay
+  C:00B7H         PUBLIC        _ShowLatticeDisplayColumn
+  B:00B0H.5       PUBLIC        RCK
+  B:00B0H.6       PUBLIC        SCK
+  B:00B0H.4       PUBLIC        SER
+  -------         PROC          _WRITEBYTETO74HC595
+  D:0005H         SYMBOL        Byte
+  -------         DO            
+  D:0003H         SYMBOL        i
+  -------         ENDDO         
+  C:008AH         LINE#         7
+  C:008CH         LINE#         8
+  C:008CH         LINE#         10
+  C:008EH         LINE#         11
+  C:008EH         LINE#         12
+  C:00AAH         LINE#         13
+  C:00ACH         LINE#         14
+  C:00AEH         LINE#         15
+  C:00B2H         LINE#         17
+  C:00B4H         LINE#         18
+  C:00B6H         LINE#         19
+  -------         ENDPROC       _WRITEBYTETO74HC595
+  -------         PROC          _DELAYMS
+  D:0006H         SYMBOL        xms
+  -------         DO            
+  D:0005H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:00D9H         LINE#         22
+  C:00D9H         LINE#         23
+  C:00D9H         LINE#         26
+  C:00E3H         LINE#         27
+  C:00E3H         LINE#         28
+  C:00EBH         LINE#         29
+  C:00EBH         LINE#         30
+  C:00EFH         LINE#         31
+  C:00F2H         LINE#         32
+  C:00F2H         LINE#         33
+  -------         ENDPROC       _DELAYMS
+  -------         PROC          _SHOWLATTICEDISPLAYCOLUMN
+  D:0002H         SYMBOL        Column
+  D:0004H         SYMBOL        Data
+  C:00B7H         LINE#         35
+  C:00B9H         LINE#         36
+  C:00B9H         LINE#         37
+  C:00BEH         LINE#         38
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/22/2024  00:27:10  PAGE 3
+
+
+  C:00CEH         LINE#         39
+  C:00D5H         LINE#         40
+  C:00D8H         LINE#         41
+  -------         ENDPROC       _SHOWLATTICEDISPLAYCOLUMN
+  -------         PROC          INITLATTICEDISPLAY
+  C:00FFH         LINE#         56
+  C:00FFH         LINE#         57
+  C:00FFH         LINE#         58
+  C:0101H         LINE#         59
+  C:0103H         LINE#         60
+  -------         ENDPROC       INITLATTICEDISPLAY
+  -------         PROC          MAIN
+  -------         DO            
+  D:0001H         SYMBOL        i
+  D:0008H         SYMBOL        Offset
+  D:0009H         SYMBOL        Count
+  -------         ENDDO         
+  C:0053H         LINE#         62
+  C:0053H         LINE#         63
+  C:0053H         LINE#         64
+  C:0058H         LINE#         66
+  C:005BH         LINE#         68
+  C:005BH         LINE#         69
+  C:005BH         LINE#         70
+  C:005DH         LINE#         71
+  C:005DH         LINE#         72
+  C:006CH         LINE#         73
+  C:0070H         LINE#         75
+  C:0072H         LINE#         76
+  C:0079H         LINE#         77
+  C:0079H         LINE#         78
+  C:007CH         LINE#         79
+  C:007EH         LINE#         81
+  C:0085H         LINE#         82
+  C:0085H         LINE#         83
+  C:0088H         LINE#         84
+  C:0088H         LINE#         85
+  C:0088H         LINE#         86
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+Program Size: data=11.0 xdata=0 code=260
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -17,6 +17,7 @@
 
   <project>
     <PathAndName>.\NixieTube\NixieTube.uvproj</PathAndName>
+    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
@@ -25,11 +26,14 @@
 
   <project>
     <PathAndName>.\Timer\Timer.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\UART\UART.uvproj</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\LatticeDisplay\LatticeDisplay.uvproj</PathAndName>
     <NodeIsActive>1</NodeIsActive>
     <NodeIsExpanded>1</NodeIsExpanded>
   </project>
