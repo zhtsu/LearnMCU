@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 21:48:13 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52   1              
   53   1              TF0 = 0;
   54   1              TR0 = 1;
-C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 2   
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 21:48:13 PAGE 2   
 
   55   1              TH0 = 0xFC;
   56   1              TL0 = 0x66;
@@ -126,7 +126,7 @@ line level    source
  114   1              DS1302_CE = 1;
  115   1              
  116   1              for (i = 0; i < 8; i++)
-C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 3   
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 21:48:13 PAGE 3   
 
  117   1              {
  118   2                      DS1302_IO = Command & (0x01 << i);
@@ -186,28 +186,28 @@ line level    source
  172   1              DS1302_Time[6] = DecodeBCD(ReadByteFromDS1302(DS1302_DAY));
  173   1      }
  174          
- 175          unsigned char KeyNum, MODE, TimeSetSelected, TimeSetFlashFlag;
+ 175          unsigned char KeyNum, MODE, TimeSetSelect, TimeSetFlashFlag;
  176          
  177          void TimeShow()
  178          {
-C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 4   
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 21:48:13 PAGE 4   
 
- 179   1              if (TimeSetSelected == 0 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 1, "  ");
+ 179   1              if (TimeSetSelect == 0 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 1, "  ");
  180   1              else LCD_ShowNum(1, 1, DS1302_Time[0], 2);
  181   1              
- 182   1              if (TimeSetSelected == 1 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 4, "  ");
+ 182   1              if (TimeSetSelect == 1 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 4, "  ");
  183   1              else LCD_ShowNum(1, 4, DS1302_Time[1], 2);
  184   1              
- 185   1              if (TimeSetSelected == 2 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 7, "  ");
+ 185   1              if (TimeSetSelect == 2 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 7, "  ");
  186   1              else LCD_ShowNum(1, 7, DS1302_Time[2], 2);
  187   1              
- 188   1              if (TimeSetSelected == 3 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 1, "  ");
+ 188   1              if (TimeSetSelect == 3 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 1, "  ");
  189   1              else LCD_ShowNum(2, 1, DS1302_Time[3], 2);
  190   1              
- 191   1              if (TimeSetSelected == 4 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 4, "  ");
+ 191   1              if (TimeSetSelect == 4 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 4, "  ");
  192   1              else LCD_ShowNum(2, 4, DS1302_Time[4], 2);
  193   1              
- 194   1              if (TimeSetSelected == 5 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 7, "  ");
+ 194   1              if (TimeSetSelect == 5 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 7, "  ");
  195   1              else LCD_ShowNum(2, 7, DS1302_Time[5], 2);
  196   1      }
  197          
@@ -220,16 +220,16 @@ line level    source
  204          {
  205   1              if (KeyNum == 2)
  206   1              {
- 207   2                      TimeSetSelected++;
- 208   2                      TimeSetSelected %= 6;
+ 207   2                      TimeSetSelect++;
+ 208   2                      TimeSetSelect %= 6;
  209   2              }
  210   1              else if (KeyNum == 3)
  211   1              {
- 212   2                      DS1302_Time[TimeSetSelected]++;
+ 212   2                      DS1302_Time[TimeSetSelect]++;
  213   2              }
  214   1              else if (KeyNum == 4)
  215   1              {
- 216   2                      DS1302_Time[TimeSetSelected]--;
+ 216   2                      DS1302_Time[TimeSetSelect]--;
  217   2              }
  218   1              
  219   1              TimeShow();
@@ -254,9 +254,9 @@ line level    source
  238   3                              if (MODE == 0)
  239   3                              {
  240   4                                      MODE = 1;
-C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 5   
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 21:48:13 PAGE 5   
 
- 241   4                                      TimeSetSelected = 0;
+ 241   4                                      TimeSetSelect = 0;
  242   4                              }
  243   3                              else if (MODE == 1)
  244   3                              {

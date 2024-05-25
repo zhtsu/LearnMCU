@@ -172,26 +172,26 @@ void DS1302_ReadTime()
 	DS1302_Time[6] = DecodeBCD(ReadByteFromDS1302(DS1302_DAY));
 }
 
-unsigned char KeyNum, MODE, TimeSetSelected, TimeSetFlashFlag;
+unsigned char KeyNum, MODE, TimeSetSelect, TimeSetFlashFlag;
 
 void TimeShow()
 {
-	if (TimeSetSelected == 0 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 1, "  ");
+	if (TimeSetSelect == 0 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 1, "  ");
 	else LCD_ShowNum(1, 1, DS1302_Time[0], 2);
 	
-	if (TimeSetSelected == 1 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 4, "  ");
+	if (TimeSetSelect == 1 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 4, "  ");
 	else LCD_ShowNum(1, 4, DS1302_Time[1], 2);
 	
-	if (TimeSetSelected == 2 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 7, "  ");
+	if (TimeSetSelect == 2 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 7, "  ");
 	else LCD_ShowNum(1, 7, DS1302_Time[2], 2);
 	
-	if (TimeSetSelected == 3 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 1, "  ");
+	if (TimeSetSelect == 3 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 1, "  ");
 	else LCD_ShowNum(2, 1, DS1302_Time[3], 2);
 	
-	if (TimeSetSelected == 4 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 4, "  ");
+	if (TimeSetSelect == 4 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 4, "  ");
 	else LCD_ShowNum(2, 4, DS1302_Time[4], 2);
 	
-	if (TimeSetSelected == 5 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 7, "  ");
+	if (TimeSetSelect == 5 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 7, "  ");
 	else LCD_ShowNum(2, 7, DS1302_Time[5], 2);
 }
 
@@ -204,16 +204,16 @@ void TimeSet()
 {
 	if (KeyNum == 2)
 	{
-		TimeSetSelected++;
-		TimeSetSelected %= 6;
+		TimeSetSelect++;
+		TimeSetSelect %= 6;
 	}
 	else if (KeyNum == 3)
 	{
-		DS1302_Time[TimeSetSelected]++;
+		DS1302_Time[TimeSetSelect]++;
 	}
 	else if (KeyNum == 4)
 	{
-		DS1302_Time[TimeSetSelected]--;
+		DS1302_Time[TimeSetSelect]--;
 	}
 	
 	TimeShow();
@@ -238,7 +238,7 @@ void main()
 			if (MODE == 0)
 			{
 				MODE = 1;
-				TimeSetSelected = 0;
+				TimeSetSelect = 0;
 			}
 			else if (MODE == 1)
 			{

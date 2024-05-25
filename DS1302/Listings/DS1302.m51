@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        05/25/2024  13:58:37  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/25/2024  21:48:49  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -59,7 +59,7 @@ LINK MAP OF MODULE:  .\Objects\DS1302 (MAIN)
             CODE    05BAH     001EH     UNIT         ?PR?_DELAYMS?MAIN
             CODE    05D8H     001EH     UNIT         ?PR?_LCD_WRITEDATA?LCD1602
             CODE    05F6H     001DH     UNIT         ?PR?_LCD_SHOWNUM?LCD1602
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 2
 
 
             CODE    0613H     0017H     UNIT         ?PR?INITTIMER0?MAIN
@@ -119,7 +119,7 @@ SEGMENT                                  DATA_GROUP
   +--> ?PR?_WRITEBYTETODS1302?MAIN
   +--> ?PR?_ENCODEBCD?MAIN
 
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 3
 
 
 ?PR?_WRITEBYTETODS1302?MAIN            0018H    0002H
@@ -170,18 +170,19 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   B:00B0H.3       PUBLIC        P3_3
   C:0669H         PUBLIC        _EncodeBCD
   D:000AH         PUBLIC        CallbackFunc
-  D:000DH         PUBLIC        MODE
+  D:000DH         PUBLIC        TimeSetSelect
+  D:000EH         PUBLIC        MODE
   C:023AH         PUBLIC        main
   C:044CH         PUBLIC        Key
-  D:000EH         PUBLIC        TimeSetFlashFlag
+  D:000FH         PUBLIC        TimeSetFlashFlag
   C:06B0H         PUBLIC        TimeSetFlash
   C:05BEH         PUBLIC        _DelayMs
   C:000EH         PUBLIC        TimeShow
   D:0089H         PUBLIC        TMOD
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 4
+
+
   C:056AH         PUBLIC        TimeSet
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 4
-
-
   B:00B0H.5       PUBLIC        DS1302_CE
   C:0366H         PUBLIC        _WriteByteToDS1302
   B:00A8H.1       PUBLIC        ET0
@@ -189,14 +190,13 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   C:0613H         PUBLIC        InitTimer0
   D:008CH         PUBLIC        TH0
   C:040BH         PUBLIC        DS1302_ReadTime
-  D:000FH         PUBLIC        DS1302_Time
+  D:0010H         PUBLIC        DS1302_Time
   D:008AH         PUBLIC        TL0
   B:00B8H.1       PUBLIC        PT0
   B:0088H.4       PUBLIC        TR0
   B:00B0H.4       PUBLIC        DS1302_IO
-  D:0016H         PUBLIC        KeyNum
+  D:0017H         PUBLIC        KeyNum
   B:00B0H.6       PUBLIC        DS1302_SCLK
-  D:0017H         PUBLIC        TimeSetSelected
   C:0003H         PUBLIC        InitDS1302
   C:05BAH         SYMBOL        L?0090
   -------         PROC          L?0089
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   C:0613H         LINE#         50
   C:0616H         LINE#         51
   C:0619H         LINE#         53
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 5
 
 
   C:061BH         LINE#         54
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   -------         PROC          _READBYTEFROMDS1302
   D:0005H         SYMBOL        Command
   -------         DO            
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 6
 
 
   D:0003H         SYMBOL        i
@@ -359,7 +359,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   C:0353H         LINE#         160
   C:035FH         LINE#         161
   -------         ENDPROC       DS1302_SETTIME
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 7
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 7
 
 
   -------         PROC          DS1302_READTIME
@@ -419,7 +419,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   C:023AH         LINE#         222
   C:023AH         LINE#         223
   C:023AH         LINE#         224
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 8
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 8
 
 
   C:023DH         LINE#         225
@@ -479,7 +479,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   -------         PROC          L?0048
   -------         ENDPROC       L?0048
   -------         PROC          LCD_DELAY
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 9
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 9
 
 
   -------         DO            
@@ -539,7 +539,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   -------         PROC          LCD_INIT
   C:0655H         LINE#         82
   C:0655H         LINE#         83
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 10
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 10
 
 
   C:0655H         LINE#         84
@@ -599,7 +599,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   D:001AH         SYMBOL        Number
   D:001CH         SYMBOL        Length
   -------         DO            
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 11
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 11
 
 
   D:0002H         SYMBOL        i
@@ -659,7 +659,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (MAIN)
   C:04F1H         LINE#         197
   C:04F1H         LINE#         198
   C:04F3H         LINE#         199
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  13:58:37  PAGE 12
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2024  21:48:49  PAGE 12
 
 
   C:04F5H         LINE#         201

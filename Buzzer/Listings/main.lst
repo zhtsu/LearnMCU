@@ -1,0 +1,143 @@
+C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:33:44 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "music.h"
+   3          
+   4          sbit Buzzer = P2 ^ 5;
+   5          
+   6          // Delay for @11.0592MHz
+   7          void DelayMs(unsigned int xms)
+   8          {
+   9   1              unsigned char i, j;
+  10   1              
+  11   1              while (xms--)
+  12   1              {
+  13   2                      for (i = 2; i > 0; i--)
+  14   2                      {
+  15   3                              for (j = 199; j > 0; j--);
+  16   3                      }
+  17   2              }
+  18   1      }
+  19          
+  20          typedef struct
+  21          {
+  22                  int A;
+  23                  int B;
+  24                  int C;
+  25          } F74LS138;
+  26          
+  27          F74LS138 TubeTable[] = {
+  28                  {1, 1, 1}, {1, 1, 0}, {1, 0, 1}, {1, 0, 0},
+  29                  {0, 1, 1}, {0, 1, 0}, {0, 0, 1}, {0, 0, 0}
+  30          };
+  31          
+  32          unsigned char DigitTable[] = {
+  33                  0x3F, 0x06, 0x5B, 0x4F,
+  34                  0x66, 0x6D, 0x7D, 0x7F, 0x6F
+  35          };
+  36          
+  37          void DisplayDigit(unsigned char Location, Number)
+  38          {
+  39   1              P2_4 = TubeTable[Location - 1].A;
+  40   1              P2_3 = TubeTable[Location - 1].B;
+  41   1              P2_2 = TubeTable[Location - 1].C;
+  42   1              
+  43   1              P0 = DigitTable[Number];
+  44   1      }
+  45          
+  46          void InitTimer0()
+  47          {
+  48   1              TMOD &= 0xF0;
+  49   1              TMOD |= 0x01;
+  50   1      
+  51   1              TF0 = 0;
+  52   1              TR0 = 1;
+  53   1              TH0 = 0xFC;
+  54   1              TL0 = 0x66;
+C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:33:44 PAGE 2   
+
+  55   1      
+  56   1              ET0 = 1;
+  57   1              EA  = 1;
+  58   1              PT0 = 0;
+  59   1      }
+  60          
+  61          Note SelectedNote;
+  62          unsigned char NoteSelect;
+  63          
+  64          void (*CallbackFunc)(void) = 0;
+  65          
+  66          void Routine_Timer0() interrupt 1
+  67          {
+  68   1              TH0 = FreqTable[SelectedNote.Syllable] / 256;
+  69   1              TL0 = FreqTable[SelectedNote.Syllable] % 256;
+  70   1              
+  71   1              if (CallbackFunc) CallbackFunc();
+  72   1      }
+  73          
+  74          void ActivateBuzzer()
+  75          {
+  76   1              Buzzer = !Buzzer;
+  77   1      }
+  78          
+  79          void main()
+  80          {
+  81   1              P0 = 0x00;
+  82   1              DelayMs(2000);
+  83   1              
+  84   1              InitTimer0();
+  85   1              
+  86   1              CallbackFunc = ActivateBuzzer;
+  87   1              
+  88   1              while (1)
+  89   1              {
+  90   2                      SelectedNote = Music[NoteSelect];
+  91   2                      if (SelectedNote.Syllable == 0xFF)
+  92   2                      {
+  93   3                              TR0 = 0;
+  94   3                              while (1);
+  95   3                      }
+  96   2                      
+  97   2                      if (SelectedNote.Syllable == 0)
+  98   2                      {
+  99   3                              TR0 = 0;
+ 100   3                      }
+ 101   2                      else
+ 102   2                      {
+ 103   3                              TR0 = 1;
+ 104   3                              DisplayDigit(GetNixieLocation(SelectedNote.Syllable), 0);
+ 105   3                      }
+ 106   2                      
+ 107   2                      DelayMs(SelectedNote.Duration * 240);
+ 108   2                      
+ 109   2                      NoteSelect++;
+ 110   2                      
+ 111   2                      TR0 = 0;
+ 112   2                      DelayMs(5);
+ 113   2                      TR0 = 1;
+ 114   2              }
+ 115   1      }
+
+C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:33:44 PAGE 3   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    414    ----
+   CONSTANT SIZE    =    360    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     63    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
