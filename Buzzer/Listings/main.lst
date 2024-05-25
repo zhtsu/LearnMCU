@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:33:44 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:36:57 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52   1              TR0 = 1;
   53   1              TH0 = 0xFC;
   54   1              TL0 = 0x66;
-C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:33:44 PAGE 2   
+C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:36:57 PAGE 2   
 
   55   1      
   56   1              ET0 = 1;
@@ -90,47 +90,46 @@ line level    source
   78          
   79          void main()
   80          {
-  81   1              P0 = 0x00;
-  82   1              DelayMs(2000);
-  83   1              
-  84   1              InitTimer0();
-  85   1              
-  86   1              CallbackFunc = ActivateBuzzer;
-  87   1              
-  88   1              while (1)
-  89   1              {
-  90   2                      SelectedNote = Music[NoteSelect];
-  91   2                      if (SelectedNote.Syllable == 0xFF)
-  92   2                      {
-  93   3                              TR0 = 0;
-  94   3                              while (1);
-  95   3                      }
-  96   2                      
-  97   2                      if (SelectedNote.Syllable == 0)
-  98   2                      {
-  99   3                              TR0 = 0;
- 100   3                      }
- 101   2                      else
- 102   2                      {
- 103   3                              TR0 = 1;
- 104   3                              DisplayDigit(GetNixieLocation(SelectedNote.Syllable), 0);
- 105   3                      }
- 106   2                      
- 107   2                      DelayMs(SelectedNote.Duration * 240);
- 108   2                      
- 109   2                      NoteSelect++;
- 110   2                      
- 111   2                      TR0 = 0;
- 112   2                      DelayMs(5);
- 113   2                      TR0 = 1;
- 114   2              }
- 115   1      }
+  81   1              DelayMs(1000);
+  82   1              
+  83   1              InitTimer0();
+  84   1              
+  85   1              CallbackFunc = ActivateBuzzer;
+  86   1              
+  87   1              while (1)
+  88   1              {
+  89   2                      SelectedNote = Music[NoteSelect];
+  90   2                      if (SelectedNote.Syllable == 0xFF)
+  91   2                      {
+  92   3                              TR0 = 0;
+  93   3                              while (1);
+  94   3                      }
+  95   2                      
+  96   2                      if (SelectedNote.Syllable == 0)
+  97   2                      {
+  98   3                              TR0 = 0;
+  99   3                      }
+ 100   2                      else
+ 101   2                      {
+ 102   3                              TR0 = 1;
+ 103   3                              DisplayDigit(GetNixieLocation(SelectedNote.Syllable), 0);
+ 104   3                      }
+ 105   2                      
+ 106   2                      DelayMs(SelectedNote.Duration * 240);
+ 107   2                      
+ 108   2                      NoteSelect++;
+ 109   2                      
+ 110   2                      TR0 = 0;
+ 111   2                      DelayMs(5);
+ 112   2                      TR0 = 1;
+ 113   2              }
+ 114   1      }
 
-C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:33:44 PAGE 3   
 
+C51 COMPILER V9.54   MAIN                                                                  05/26/2024 04:36:57 PAGE 3   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    414    ----
+   CODE SIZE        =    411    ----
    CONSTANT SIZE    =    360    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

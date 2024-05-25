@@ -78,8 +78,7 @@ void ActivateBuzzer()
 
 void main()
 {
-	P0 = 0x00;
-	DelayMs(2000);
+	DelayMs(1000);
 	
 	InitTimer0();
 	
