@@ -10,10 +10,6 @@
 #define DS1302_YEAR 	0x8C
 #define DS1302_WP 		0x8E
 
-sbit DS1302_SCLK = P3 ^ 6;
-sbit DS1302_IO = P3 ^ 4;
-sbit DS1302_CE = P3 ^ 5;
-
 // Delay for @11.0592MHz
 void DelayMs(unsigned int xms)
 {
@@ -25,6 +21,59 @@ void DelayMs(unsigned int xms)
 		{
 			for (j = 199; j > 0; j--);
 		}
+	}
+}
+
+#define WHEN_BUTTON_PRESSED(Button) \
+	DelayMs(20); 					\
+	while(Button == 0); 			\
+	DelayMs(20);
+
+sbit DS1302_SCLK = P3 ^ 6;
+sbit DS1302_IO = P3 ^ 4;
+sbit DS1302_CE = P3 ^ 5;
+
+unsigned char Key()
+{
+	unsigned char KeyNum = 0;
+	
+	if (P3_1 == 0) { WHEN_BUTTON_PRESSED(P3_1); KeyNum = 1; }
+	if (P3_0 == 0) { WHEN_BUTTON_PRESSED(P3_0); KeyNum = 2; }
+	if (P3_2 == 0) { WHEN_BUTTON_PRESSED(P3_2); KeyNum = 3; }
+	if (P3_3 == 0) { WHEN_BUTTON_PRESSED(P3_3); KeyNum = 4; }
+
+	return KeyNum;
+}
+
+void InitTimer0()
+{
+	TMOD &= 0xF0;
+	TMOD |= 0x01;
+	
+	TF0 = 0;
+	TR0 = 1;
+	TH0 = 0xFC;
+	TL0 = 0x66;
+	
+	ET0 = 1;
+	EA  = 1;
+	PT0 = 0;
+}
+
+void (*CallbackFunc)(void) = 0;
+
+void Routine_Timer0() interrupt 1
+{
+	static unsigned int Count = 0;
+	
+	TH0 = 0xFC;
+	TL0 = 0x66;
+	
+	Count++;
+	if (Count >= 500)
+	{
+		Count = 0;
+		if (CallbackFunc) CallbackFunc();
 	}
 }
 
@@ -123,24 +172,89 @@ void DS1302_ReadTime()
 	DS1302_Time[6] = DecodeBCD(ReadByteFromDS1302(DS1302_DAY));
 }
 
+unsigned char KeyNum, MODE, TimeSetSelected, TimeSetFlashFlag;
+
+void TimeShow()
+{
+	if (TimeSetSelected == 0 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 1, "  ");
+	else LCD_ShowNum(1, 1, DS1302_Time[0], 2);
+	
+	if (TimeSetSelected == 1 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 4, "  ");
+	else LCD_ShowNum(1, 4, DS1302_Time[1], 2);
+	
+	if (TimeSetSelected == 2 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 7, "  ");
+	else LCD_ShowNum(1, 7, DS1302_Time[2], 2);
+	
+	if (TimeSetSelected == 3 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 1, "  ");
+	else LCD_ShowNum(2, 1, DS1302_Time[3], 2);
+	
+	if (TimeSetSelected == 4 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 4, "  ");
+	else LCD_ShowNum(2, 4, DS1302_Time[4], 2);
+	
+	if (TimeSetSelected == 5 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 7, "  ");
+	else LCD_ShowNum(2, 7, DS1302_Time[5], 2);
+}
+
+void TimeSetFlash()
+{
+	TimeSetFlashFlag = !TimeSetFlashFlag;
+}
+
+void TimeSet()
+{
+	if (KeyNum == 2)
+	{
+		TimeSetSelected++;
+		TimeSetSelected %= 6;
+	}
+	else if (KeyNum == 3)
+	{
+		DS1302_Time[TimeSetSelected]++;
+	}
+	else if (KeyNum == 4)
+	{
+		DS1302_Time[TimeSetSelected]--;
+	}
+	
+	TimeShow();
+}
+
 void main()
 {
-	unsigned char Second;
-	
 	LCD_Init();
 	InitDS1302();
+	InitTimer0();
 	LCD_ShowString(1, 1, "  -  -  ");
 	LCD_ShowString(2, 1, "  :  :  ");
+	
 	DS1302_SetTime();
+	CallbackFunc = TimeSetFlash;
 	
 	while (1)
 	{
-		DS1302_ReadTime();
-		LCD_ShowNum(1, 1, DS1302_Time[0], 2);
-		LCD_ShowNum(1, 4, DS1302_Time[1], 2);
-		LCD_ShowNum(1, 7, DS1302_Time[2], 2);
-		LCD_ShowNum(2, 1, DS1302_Time[3], 2);
-		LCD_ShowNum(2, 4, DS1302_Time[4], 2);
-		LCD_ShowNum(2, 7, DS1302_Time[5], 2);
+		KeyNum = Key();
+		if (KeyNum == 1)
+		{
+			if (MODE == 0)
+			{
+				MODE = 1;
+				TimeSetSelected = 0;
+			}
+			else if (MODE == 1)
+			{
+				MODE = 0;
+				DS1302_SetTime();
+			}
+		}
+		
+		if (MODE == 0)
+		{
+			DS1302_ReadTime();
+			TimeShow();
+		}
+		else if (MODE == 1)
+		{
+			TimeSet();
+		}	
 	}
 }

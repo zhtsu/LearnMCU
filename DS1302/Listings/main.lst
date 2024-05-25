@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   MAIN                                                                  05/24/2024 23:11:42 PAGE 1   
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
@@ -20,156 +20,273 @@ line level    source
   10          #define DS1302_YEAR     0x8C
   11          #define DS1302_WP               0x8E
   12          
-  13          sbit DS1302_SCLK = P3 ^ 6;
-  14          sbit DS1302_IO = P3 ^ 4;
-  15          sbit DS1302_CE = P3 ^ 5;
-  16          
-  17          // Delay for @11.0592MHz
-  18          void DelayMs(unsigned int xms)
-  19          {
-  20   1              unsigned char i, j;
-  21   1              
-  22   1              while (xms--)
-  23   1              {
-  24   2                      for (i = 2; i > 0; i--)
-  25   2                      {
-  26   3                              for (j = 199; j > 0; j--);
-  27   3                      }
-  28   2              }
-  29   1      }
-  30          
-  31          void InitDS1302(void)
-  32          {
-  33   1              DS1302_CE = 0;
-  34   1              DS1302_SCLK = 0;
-  35   1      }
-  36          
-  37          void WriteByteToDS1302(unsigned char Command, Data)
-  38          {
-  39   1              unsigned char i;
-  40   1              
-  41   1              DS1302_CE = 1;
-  42   1              
-  43   1              for (i = 0; i < 8; i++)
-  44   1              {
-  45   2                      DS1302_IO = Command & (0x01 << i);
-  46   2                      DS1302_SCLK = 1;
-  47   2                      DS1302_SCLK = 0;
-  48   2              }
-  49   1              
-  50   1              for (i = 0; i < 8; i++)
-  51   1              {
-  52   2                      DS1302_IO = Data & (0x01 << i);
-  53   2                      DS1302_SCLK = 1;
-  54   2                      DS1302_SCLK = 0;
-C51 COMPILER V9.54   MAIN                                                                  05/24/2024 23:11:42 PAGE 2   
+  13          // Delay for @11.0592MHz
+  14          void DelayMs(unsigned int xms)
+  15          {
+  16   1              unsigned char i, j;
+  17   1              
+  18   1              while (xms--)
+  19   1              {
+  20   2                      for (i = 2; i > 0; i--)
+  21   2                      {
+  22   3                              for (j = 199; j > 0; j--);
+  23   3                      }
+  24   2              }
+  25   1      }
+  26          
+  27          #define WHEN_BUTTON_PRESSED(Button) \
+  28                  DelayMs(20);                                    \
+  29                  while(Button == 0);                     \
+  30                  DelayMs(20);
+  31          
+  32          sbit DS1302_SCLK = P3 ^ 6;
+  33          sbit DS1302_IO = P3 ^ 4;
+  34          sbit DS1302_CE = P3 ^ 5;
+  35          
+  36          unsigned char Key()
+  37          {
+  38   1              unsigned char KeyNum = 0;
+  39   1              
+  40   1              if (P3_1 == 0) { WHEN_BUTTON_PRESSED(P3_1); KeyNum = 1; }
+  41   1              if (P3_0 == 0) { WHEN_BUTTON_PRESSED(P3_0); KeyNum = 2; }
+  42   1              if (P3_2 == 0) { WHEN_BUTTON_PRESSED(P3_2); KeyNum = 3; }
+  43   1              if (P3_3 == 0) { WHEN_BUTTON_PRESSED(P3_3); KeyNum = 4; }
+  44   1      
+  45   1              return KeyNum;
+  46   1      }
+  47          
+  48          void InitTimer0()
+  49          {
+  50   1              TMOD &= 0xF0;
+  51   1              TMOD |= 0x01;
+  52   1              
+  53   1              TF0 = 0;
+  54   1              TR0 = 1;
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 2   
 
-  55   2              }
-  56   1              
-  57   1              DS1302_CE = 0;
-  58   1      }
-  59          
-  60          unsigned char ReadByteFromDS1302(unsigned char Command)
-  61          {
-  62   1              unsigned char i, Data = 0x00;
-  63   1              
-  64   1              Command |= 0x01;
-  65   1              DS1302_CE = 1;
-  66   1              
-  67   1              for (i = 0; i < 8; i++)
-  68   1              {
-  69   2                      DS1302_IO = Command & (0x01 << i);
-  70   2                      DS1302_SCLK = 0;
-  71   2                      DS1302_SCLK = 1;
-  72   2              }
-  73   1              
-  74   1              for (i = 0; i < 8; i++)
-  75   1              {
-  76   2                      DS1302_SCLK = 1;
-  77   2                      DS1302_SCLK = 0;
-  78   2                      if (DS1302_IO)
-  79   2                      {
-  80   3                              Data |= (0x01 << i);
-  81   3                      }
-  82   2              }
-  83   1              
-  84   1              DS1302_CE = 0;
-  85   1              DS1302_IO = 0;
-  86   1              
-  87   1              return Data;
-  88   1      }
-  89          
-  90          unsigned char DS1302_Time[] = {19, 11, 16, 12, 59, 55, 6};
-  91          
-  92          unsigned char EncodeBCD(unsigned char BCD)
-  93          {
-  94   1              return BCD / 10 * 16 + BCD % 10;
-  95   1      }
-  96          
-  97          unsigned char DecodeBCD(unsigned char BCD)
-  98          {
-  99   1              return BCD / 16 * 10 + BCD % 16;
- 100   1      }
- 101          
- 102          void DS1302_SetTime()
- 103          {
- 104   1              WriteByteToDS1302(DS1302_WP, 0x00);
- 105   1              WriteByteToDS1302(DS1302_YEAR, EncodeBCD(DS1302_Time[0]));
- 106   1              WriteByteToDS1302(DS1302_MONTH, EncodeBCD(DS1302_Time[1]));
- 107   1              WriteByteToDS1302(DS1302_DATE, EncodeBCD(DS1302_Time[2]));
- 108   1              WriteByteToDS1302(DS1302_HOUR, EncodeBCD(DS1302_Time[3]));
- 109   1              WriteByteToDS1302(DS1302_MINUTE, EncodeBCD(DS1302_Time[4]));
- 110   1              WriteByteToDS1302(DS1302_SECOND, EncodeBCD(DS1302_Time[5]));
- 111   1              WriteByteToDS1302(DS1302_DAY, EncodeBCD(DS1302_Time[6]));
- 112   1              WriteByteToDS1302(DS1302_WP, 0x80);
- 113   1      }
- 114          
- 115          void DS1302_ReadTime()
- 116          {
-C51 COMPILER V9.54   MAIN                                                                  05/24/2024 23:11:42 PAGE 3   
+  55   1              TH0 = 0xFC;
+  56   1              TL0 = 0x66;
+  57   1              
+  58   1              ET0 = 1;
+  59   1              EA  = 1;
+  60   1              PT0 = 0;
+  61   1      }
+  62          
+  63          void (*CallbackFunc)(void) = 0;
+  64          
+  65          void Routine_Timer0() interrupt 1
+  66          {
+  67   1              static unsigned int Count = 0;
+  68   1              
+  69   1              TH0 = 0xFC;
+  70   1              TL0 = 0x66;
+  71   1              
+  72   1              Count++;
+  73   1              if (Count >= 500)
+  74   1              {
+  75   2                      Count = 0;
+  76   2                      if (CallbackFunc) CallbackFunc();
+  77   2              }
+  78   1      }
+  79          
+  80          void InitDS1302(void)
+  81          {
+  82   1              DS1302_CE = 0;
+  83   1              DS1302_SCLK = 0;
+  84   1      }
+  85          
+  86          void WriteByteToDS1302(unsigned char Command, Data)
+  87          {
+  88   1              unsigned char i;
+  89   1              
+  90   1              DS1302_CE = 1;
+  91   1              
+  92   1              for (i = 0; i < 8; i++)
+  93   1              {
+  94   2                      DS1302_IO = Command & (0x01 << i);
+  95   2                      DS1302_SCLK = 1;
+  96   2                      DS1302_SCLK = 0;
+  97   2              }
+  98   1              
+  99   1              for (i = 0; i < 8; i++)
+ 100   1              {
+ 101   2                      DS1302_IO = Data & (0x01 << i);
+ 102   2                      DS1302_SCLK = 1;
+ 103   2                      DS1302_SCLK = 0;
+ 104   2              }
+ 105   1              
+ 106   1              DS1302_CE = 0;
+ 107   1      }
+ 108          
+ 109          unsigned char ReadByteFromDS1302(unsigned char Command)
+ 110          {
+ 111   1              unsigned char i, Data = 0x00;
+ 112   1              
+ 113   1              Command |= 0x01;
+ 114   1              DS1302_CE = 1;
+ 115   1              
+ 116   1              for (i = 0; i < 8; i++)
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 3   
 
- 117   1              DS1302_Time[0] = DecodeBCD(ReadByteFromDS1302(DS1302_YEAR));
- 118   1              DS1302_Time[1] = DecodeBCD(ReadByteFromDS1302(DS1302_MONTH));
- 119   1              DS1302_Time[2] = DecodeBCD(ReadByteFromDS1302(DS1302_DATE));
- 120   1              DS1302_Time[3] = DecodeBCD(ReadByteFromDS1302(DS1302_HOUR));
- 121   1              DS1302_Time[4] = DecodeBCD(ReadByteFromDS1302(DS1302_MINUTE));
- 122   1              DS1302_Time[5] = DecodeBCD(ReadByteFromDS1302(DS1302_SECOND));
- 123   1              DS1302_Time[6] = DecodeBCD(ReadByteFromDS1302(DS1302_DAY));
- 124   1      }
- 125          
- 126          void main()
- 127          {
- 128   1              unsigned char Second;
- 129   1              
- 130   1              LCD_Init();
- 131   1              InitDS1302();
- 132   1              LCD_ShowString(1, 1, "  -  -  ");
- 133   1              LCD_ShowString(2, 1, "  :  :  ");
- 134   1              DS1302_SetTime();
+ 117   1              {
+ 118   2                      DS1302_IO = Command & (0x01 << i);
+ 119   2                      DS1302_SCLK = 0;
+ 120   2                      DS1302_SCLK = 1;
+ 121   2              }
+ 122   1              
+ 123   1              for (i = 0; i < 8; i++)
+ 124   1              {
+ 125   2                      DS1302_SCLK = 1;
+ 126   2                      DS1302_SCLK = 0;
+ 127   2                      if (DS1302_IO)
+ 128   2                      {
+ 129   3                              Data |= (0x01 << i);
+ 130   3                      }
+ 131   2              }
+ 132   1              
+ 133   1              DS1302_CE = 0;
+ 134   1              DS1302_IO = 0;
  135   1              
- 136   1              while (1)
- 137   1              {
- 138   2                      DS1302_ReadTime();
- 139   2                      LCD_ShowNum(1, 1, DS1302_Time[0], 2);
- 140   2                      LCD_ShowNum(1, 4, DS1302_Time[1], 2);
- 141   2                      LCD_ShowNum(1, 7, DS1302_Time[2], 2);
- 142   2                      LCD_ShowNum(2, 1, DS1302_Time[3], 2);
- 143   2                      LCD_ShowNum(2, 4, DS1302_Time[4], 2);
- 144   2                      LCD_ShowNum(2, 7, DS1302_Time[5], 2);
- 145   2              }
- 146   1      }
-*** WARNING C280 IN LINE 128 OF main.c: 'Second': unreferenced local variable
+ 136   1              return Data;
+ 137   1      }
+ 138          
+ 139          unsigned char DS1302_Time[] = {19, 11, 16, 12, 59, 55, 6};
+ 140          
+ 141          unsigned char EncodeBCD(unsigned char BCD)
+ 142          {
+ 143   1              return BCD / 10 * 16 + BCD % 10;
+ 144   1      }
+ 145          
+ 146          unsigned char DecodeBCD(unsigned char BCD)
+ 147          {
+ 148   1              return BCD / 16 * 10 + BCD % 16;
+ 149   1      }
+ 150          
+ 151          void DS1302_SetTime()
+ 152          {
+ 153   1              WriteByteToDS1302(DS1302_WP, 0x00);
+ 154   1              WriteByteToDS1302(DS1302_YEAR, EncodeBCD(DS1302_Time[0]));
+ 155   1              WriteByteToDS1302(DS1302_MONTH, EncodeBCD(DS1302_Time[1]));
+ 156   1              WriteByteToDS1302(DS1302_DATE, EncodeBCD(DS1302_Time[2]));
+ 157   1              WriteByteToDS1302(DS1302_HOUR, EncodeBCD(DS1302_Time[3]));
+ 158   1              WriteByteToDS1302(DS1302_MINUTE, EncodeBCD(DS1302_Time[4]));
+ 159   1              WriteByteToDS1302(DS1302_SECOND, EncodeBCD(DS1302_Time[5]));
+ 160   1              WriteByteToDS1302(DS1302_DAY, EncodeBCD(DS1302_Time[6]));
+ 161   1              WriteByteToDS1302(DS1302_WP, 0x80);
+ 162   1      }
+ 163          
+ 164          void DS1302_ReadTime()
+ 165          {
+ 166   1              DS1302_Time[0] = DecodeBCD(ReadByteFromDS1302(DS1302_YEAR));
+ 167   1              DS1302_Time[1] = DecodeBCD(ReadByteFromDS1302(DS1302_MONTH));
+ 168   1              DS1302_Time[2] = DecodeBCD(ReadByteFromDS1302(DS1302_DATE));
+ 169   1              DS1302_Time[3] = DecodeBCD(ReadByteFromDS1302(DS1302_HOUR));
+ 170   1              DS1302_Time[4] = DecodeBCD(ReadByteFromDS1302(DS1302_MINUTE));
+ 171   1              DS1302_Time[5] = DecodeBCD(ReadByteFromDS1302(DS1302_SECOND));
+ 172   1              DS1302_Time[6] = DecodeBCD(ReadByteFromDS1302(DS1302_DAY));
+ 173   1      }
+ 174          
+ 175          unsigned char KeyNum, MODE, TimeSetSelected, TimeSetFlashFlag;
+ 176          
+ 177          void TimeShow()
+ 178          {
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 4   
+
+ 179   1              if (TimeSetSelected == 0 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 1, "  ");
+ 180   1              else LCD_ShowNum(1, 1, DS1302_Time[0], 2);
+ 181   1              
+ 182   1              if (TimeSetSelected == 1 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 4, "  ");
+ 183   1              else LCD_ShowNum(1, 4, DS1302_Time[1], 2);
+ 184   1              
+ 185   1              if (TimeSetSelected == 2 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(1, 7, "  ");
+ 186   1              else LCD_ShowNum(1, 7, DS1302_Time[2], 2);
+ 187   1              
+ 188   1              if (TimeSetSelected == 3 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 1, "  ");
+ 189   1              else LCD_ShowNum(2, 1, DS1302_Time[3], 2);
+ 190   1              
+ 191   1              if (TimeSetSelected == 4 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 4, "  ");
+ 192   1              else LCD_ShowNum(2, 4, DS1302_Time[4], 2);
+ 193   1              
+ 194   1              if (TimeSetSelected == 5 && TimeSetFlashFlag == 1 && MODE) LCD_ShowString(2, 7, "  ");
+ 195   1              else LCD_ShowNum(2, 7, DS1302_Time[5], 2);
+ 196   1      }
+ 197          
+ 198          void TimeSetFlash()
+ 199          {
+ 200   1              TimeSetFlashFlag = !TimeSetFlashFlag;
+ 201   1      }
+ 202          
+ 203          void TimeSet()
+ 204          {
+ 205   1              if (KeyNum == 2)
+ 206   1              {
+ 207   2                      TimeSetSelected++;
+ 208   2                      TimeSetSelected %= 6;
+ 209   2              }
+ 210   1              else if (KeyNum == 3)
+ 211   1              {
+ 212   2                      DS1302_Time[TimeSetSelected]++;
+ 213   2              }
+ 214   1              else if (KeyNum == 4)
+ 215   1              {
+ 216   2                      DS1302_Time[TimeSetSelected]--;
+ 217   2              }
+ 218   1              
+ 219   1              TimeShow();
+ 220   1      }
+ 221          
+ 222          void main()
+ 223          {
+ 224   1              LCD_Init();
+ 225   1              InitDS1302();
+ 226   1              InitTimer0();
+ 227   1              LCD_ShowString(1, 1, "  -  -  ");
+ 228   1              LCD_ShowString(2, 1, "  :  :  ");
+ 229   1              
+ 230   1              DS1302_SetTime();
+ 231   1              CallbackFunc = TimeSetFlash;
+ 232   1              
+ 233   1              while (1)
+ 234   1              {
+ 235   2                      KeyNum = Key();
+ 236   2                      if (KeyNum == 1)
+ 237   2                      {
+ 238   3                              if (MODE == 0)
+ 239   3                              {
+ 240   4                                      MODE = 1;
+C51 COMPILER V9.54   MAIN                                                                  05/25/2024 13:58:37 PAGE 5   
+
+ 241   4                                      TimeSetSelected = 0;
+ 242   4                              }
+ 243   3                              else if (MODE == 1)
+ 244   3                              {
+ 245   4                                      MODE = 0;
+ 246   4                                      DS1302_SetTime();
+ 247   4                              }
+ 248   3                      }
+ 249   2                      
+ 250   2                      if (MODE == 0)
+ 251   2                      {
+ 252   3                              DS1302_ReadTime();
+ 253   3                              TimeShow();
+ 254   3                      }
+ 255   2                      else if (MODE == 1)
+ 256   2                      {
+ 257   3                              TimeSet();
+ 258   3                      }       
+ 259   2              }
+ 260   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    527    ----
-   CONSTANT SIZE    =     18    ----
+   CODE SIZE        =   1009    ----
+   CONSTANT SIZE    =     21    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      7       3
+   DATA SIZE        =     16       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
